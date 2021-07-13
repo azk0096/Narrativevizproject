@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href = "styles/main.css">  </style>
+<title>Page Title</title>
+<style>
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+.tooltip {
+            position: absolute;
+            font-size: 12px;
+            width:  auto;
+            height: auto;
+            pointer-events: none;
+			background: white;
+			border: 1px black;
+			color: black;
+        }
+
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.full-height {
+  height: 100%;
+  background: rgb(102, 173, 231);
+}
+
+.slide {
+		    text-align: center;
+		}
+		#actions{
+			position:fixed;
+			top: 73px;
+			left: 30px;
+			z-index: 99999;
+		}
+		#actions li{
+			background: rgba(0,0,0,0.8);
+			padding: 7px;
+			margin: 2px;
+			color: #ccc;
+			display: inline-block;
+			cursor: pointer;
+		}
+		#actions li:hover{
+			color: #fff;
+			background: #81A140;
+		}
+		
+		@media all and (max-width: 900px){
+			#menu{
+				top: 55px;
+			}
+			#menu li a, #menu li.active a {
+    			padding: 5px 10px;
+				font-size: 12px;
+			}
+			#menu li {
+    			margin: 1px;
+			}
+			#actions{
+				top: 99px;
+    			left: 10px;
+			}
+			h1{
+				font-size: 3em;
+			}
+			h2{
+				font-size: 2em;
+			}
+			.intro p{
+				font-size: 1em;
+			}
+		}
+
+		body {
+		font: 16px sans-serif;
+		}
+
+		.axis path,
+		.axis line {
+		fill: none;
+		stroke: #000;
+		shape-rendering: crispEdges;
+		}
+
+		.dot {
+		stroke: #000;
+		}
+		
+		.bar:hover {
+		fill: brown;
+		}
+		
+		.axis--x path {
+		display: none;
+		}
+		.tooltip {
+					position: absolute;
+					font-size: 12px;
+					width:  auto;
+					height: auto;
+					pointer-events: none;
+					background: white;
+					border: 1px black;
+					color: black;
+				}
+
+        .arrow {
+                border: solid black;
+                border-width: 0 3px 3px 0;
+                display: inline-block;
+                padding: 3px;
+                }
+
+                .right {
+                transform: rotate(-45deg);
+                -webkit-transform: rotate(-45deg);
+                }
+
+                .left {
+                transform: rotate(135deg);
+                -webkit-transform: rotate(135deg);
+                }
+
+                .up {
+                transform: rotate(-135deg);
+                -webkit-transform: rotate(-135deg);
+                }
+
+                .down {
+                transform: rotate(45deg);
+                -webkit-transform: rotate(45deg);
+                }
+
+
+            input#right-button{
+            background: url('right.png') no-repeat top left;
+            height: 55px;
+            width: 55px;}
+
+            input#left-button{
+            background: url('left.png') no-repeat top left;
+            height: 55px;
+            width: 55px;}
+
+            h1 {
+                font-size: 40px;
+                }
+
+                h2 {
+                font-size: 30px;
+                }
+
+                p {
+                font-size: 24px;
+                }
+
+</style>
+
+</head>
+<body>
+
+<div class="full-height">
+
+    .
+
+    <form action="agro_scatter.html">
+        <input type="submit" style="float:left;" id="left-button" value="" />
+    </form>
+    <form action="agro_bubble.html">
+        <input type="submit" style="float:right;" id="right-button" value="" />
+    </form>
+
+
+    <di class="intro">
+        <center><h1>Cultivable Land Mass contribution to GDP</h1></center>
+    </di>
+    
+
+    <div style='padding:11px'>
+    <center><h2>COUNTRIES WITH MOST CULTIVABLE LAND.</h2>
+		<p style='font-size:20px' align="center">
+			What is the size of the rural land area in different countries? Various nations are shown on the x-axis, while the average rural land area in square kilometres is represented on the y-axis in the bar chart depicting average rural land area during the previous 10 years across various countries. Larger countries, by definition, have a larger amount of rural land. 
+		</p>
+    </center>
+    </div>
+    <div style='margin: auto;
+    width: 65%;
+    /* border: 3px solid green; */
+    padding: 10px;'>
+    
+        <script src="scripts\d3.v4.min.js"></script>
+        <svg width="1300" height="400"></svg>
+
+        <script>
+        
+                var tooltip = d3.select("body").append("div")
+                        .attr("class", "tooltip")
+                        .style("opacity", 0);
+                        
+                    var tipMouseover = function(d) {
+
+                        var html  = "<span style='color:black'> Country Name : " + d['CountryName'] + "<br/>" + "Average Rural Land Area  : " + d.Average + " sq km <br/>"  + "<br /></span>"; 
+                                
+                        tooltip.html(html)
+                            .style("left",  (d3.event.pageX + 15) + "px")
+                            .style("top", (d3.event.pageY - 28) + "px")
+                            .transition()
+                            .duration(200) 
+                            .style("opacity", 1) 
+
+                    };
+
+                    var tipMouseout = function(d) {
+                        tooltip.transition()
+                            .duration(300) 
+                            .style("opacity", 0); 
+                    };
+                var svg = d3.select("svg"),
+                    margin = {top: 20, right: 20, bottom: 100, left: 40},
+                    width = +svg.attr("width") - margin.left - margin.right,
+                    height = +svg.attr("height") - margin.top - margin.bottom;
+
+                var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+                    y = d3.scaleLog().rangeRound([height, 0]);
+
+                var g = svg.append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                d3.csv("data/ruralavghigher.csv", function(d) {
+                d.Average = +d.Average;
+                return d;
+                }, function(error, data) {
+                if (error) throw error;
+
+                x.domain(data.map(function(d) { return d.CountryName; }));
+                y.domain([10000, d3.max(data, function(d) { return d.Average; })]);
+
+                g.append("g")
+                    .attr("class", "axis axis--x")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.axisBottom(x))
+                    .selectAll("text")	
+                        .style("text-anchor", "end")
+                        .attr("dx", "-.8em")
+                        .attr("dy", ".15em")
+                        .attr("transform", "rotate(-65)");
+                    
+
+                g.append("g")
+                    .attr("class", "axis axis--y")
+                    .call(d3.axisLeft(y).ticks(10,".2s"))
+                    .append("text")	  
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 6)
+                    .attr("dy", "0.71em")
+                    .attr("text-anchor", "end")
+                    .text("Average Rural Land(sq km)");
+
+                g.selectAll(".bar")
+                    .data(data)
+                    .enter().append("rect")
+                    .attr("class", "bar")
+                    .attr("x", function(d) { return x(d.CountryName); })
+                    .attr("y", function(d) { return y(d.Average); })
+                    .attr("width", x.bandwidth())
+                    .attr("height", function(d) { return height - y(d.Average); })
+                    .on("mouseover", tipMouseover)
+                    .on("mouseout", tipMouseout);
+                });
+
+        
+        </script> 
+
+
+    </div>
+
+    <div style='padding:11px'>
+        <center><h2>INFERENCE</h2>
+            <p style='font-size:20px' align="center">
+                Do developed nations, on the other hand, have larger urban land area, showing a direct relationship between urbanisation and economic growth?
+            </p>
+        </center>
+    </div>
+
+</div>
+
+</body>
+</html>
